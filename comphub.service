@@ -1,0 +1,11 @@
+[Unit]
+Description=comphub service
+
+[Service]
+User=comphub
+WorkingDirectory=/opt/www/
+ExecStart=/opt/www/run.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

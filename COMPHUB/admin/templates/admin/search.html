@@ -1,0 +1,21 @@
+{% extends "admin/default.html" %}
+{% block content %}
+<table class="table table-hover mt-4">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Hardware</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <th scope="row">{{ item.id }}</th>
+            <td><a href="{{ url_for('admin.view_repair', id=item.id) }}">{{ item.name }}</a></td>
+            <td>{{ item.hardware }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

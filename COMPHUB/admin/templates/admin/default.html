@@ -1,0 +1,65 @@
+<!DOCTYPE html="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>{% block title %}Company{% endblock %}</title>
+        <meta name="viewport" content="width=device-width initial-scale=1"/>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{{ static_url_for('static', filename='build/default.bundle.css') }}"
+        />
+    </head>     
+    <body>
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <i class="las la-fw la-desktop"></i>
+                    Company
+                </a>
+            </div>
+        </nav>
+        <div class="nav-scroller bg-body shadow-sm">
+            <nav class="nav nav-underline">
+                <div class="btn-toolbar nav-link">
+                    <div class="btn-group me-2">
+                        <a href="{{ url_for('admin.index')}}" class="btn btn-secondary"><i class="pt-1 las la-fw la-home"></i></a>
+                    </div>
+                    <div class="btn-group me-2">
+                        <a href="{{ url_for('public.index')}}" class="btn btn-secondary"><i class="pt-1 las la-fw la-plus"></i></a>
+                        <a href="{{ url_for('admin.index')}}" class="btn btn-secondary"><i class="pt-1 las la-fw la-sync"></i></a>
+                        <a href="#next" class="btn btn-secondary"><i class="pt-1 las la-fw la-calendar"></i></a>
+                        <a href="#recent" class="btn btn-secondary"><i class="pt-1 las la-fw la-calendar-plus"></i></a>
+                    </div>
+                    <div class="btn-group">
+                        <form class="mb-0" action="{{ url_for('admin.search') }}" method="get">
+                        <div class="input-group">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="las la-fw la-search"></i></div>
+                            {{ search.csrf_token }}
+                            {{ search.name(class_="form-control", placeholder="Search") }}
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <main class="container">
+            <div class="col-md-6 mx-auto">
+                {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %} {% endwith %}
+            </div>
+            {% block content %}{% endblock %}
+        </main>
+        <script src="{{ static_url_for('static', filename='build/default_js.bundle.js') }}"></script>
+        {% block js %}{% endblock %}
+    </body>
+</html>

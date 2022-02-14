@@ -1,0 +1,40 @@
+{% extends "admin/default.html" %}
+{% block content %}
+<div class="card my-4">
+    <div class="card-body">
+        <h5 class="card-title">{{ item.name }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ item.email }}</h6>
+        {% if item.number %}
+            <h6 class="card-subtitle mb-2 text-muted">{{ item.number }}</h6>
+        {% endif %}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="d-flex">
+                    <div class="col-6 col-md-2"><strong>Date</strong></div>
+                    <div class="col-6 col-md-10">{{ item.datetime | datetime }}</div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex">
+                    <div class="col-6 col-md-2"><strong>Hardware</strong></div>
+                    <div class="col-6 col-md-10">{{ item.hardware }}</div>
+                </div>
+            </li>
+        </ul>
+        <div class="dropdown mt-4">
+            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ item.status }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="{{ url_for('admin.update_repair', id=item.id, status=1) }}">Waiting</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('admin.update_repair', id=item.id, status=2) }}">Received</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('admin.update_repair', id=item.id, status=3) }}">Repairing</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('admin.update_repair', id=item.id, status=4) }}">Delivery</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ url_for('admin.delete_repair', id=item.id) }}">Delete</a></li>
+            </ul>
+        </div>
+        <p class="card-text mt-4">{{ item.message }}</p>
+    </div>
+</div>
+{% endblock %}

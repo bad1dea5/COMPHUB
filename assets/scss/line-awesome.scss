@@ -1,0 +1,39 @@
+//
+//
+//
+
+@use 'sass:string';
+
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/mixins';
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/core';
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/variables';
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/larger';
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/fixed-width';
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/list';
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/bordered_pulled';
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/rotated-flipped';
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/stacked';
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/icons';
+@import '../../node_modules/line-awesome/dist/line-awesome/scss/screen-reader';
+
+@mixin line-awesome($name, $tag, $weight: 400) {
+    $string: string.to-lower-case($name);
+    $filename: 'la-#{$string}-#{$weight}.woff2';
+
+    @font-face {
+        font-family: 'Line Awesome 5 #{$name}';
+        font-weight: #{$weight};
+        font-style: normal;
+        font-display: auto;
+        src: url('../../node_modules/line-awesome/dist/line-awesome/fonts/#{$filename}') format('woff2');
+    }
+
+    .#{$tag} {
+        font-family: 'Line Awesome 5 #{$name}';
+        font-weight: #{$weight};
+    }
+}
+
+@include line-awesome("Brands", "lab");
+@include line-awesome("Regular", "lar");
+@include line-awesome("Solid", "las", 900);
