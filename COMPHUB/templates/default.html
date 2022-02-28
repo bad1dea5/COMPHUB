@@ -1,44 +1,35 @@
-<!DOCTYPE html="en">
-    <head>
-        <meta charset="utf-8"/>
-        <title>{% block title %}Company{% endblock %}</title>
-        <meta name="viewport" content="width=device-width initial-scale=1"/>
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="{{ static_url_for('static', filename='build/default.bundle.css') }}"
-        />
-    </head>     
-    <body>
-        <nav class="navbar navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">
-                    <i class="las la-fw la-desktop"></i>
-                    Company
-                </a>
-                <div class="d-flex">
-                    <a class="btn btn-secondary" href="/admin"><i class="las la-database"></i></a>
-                </div>
-            </div>
-        </nav>
-        <div class="container">
-            <main class="col-md-6 mx-auto">
-                {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %} {% endwith %}
-                {% block content %}{% endblock %}
-            </main>
-        </div>
-        <script src="{{ static_url_for('static', filename='build/default_js.bundle.js') }}"></script>
-        {% block js %}{% endblock %}
-    </body>
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <link rel="stylesheet" href="{{static_url_for('static', filename='build/default.bundle.css')}}">
+    {% block css %}{% endblock %}
+
+    <link rel="manifest" href="site.webmanifest">
+</head>
+<body>
+    
+    {% block header required %}{% endblock %}
+    <div class="container-fluid">
+        <main class="my-3">
+            {% block content required %}{% endblock %}
+        </main>
+    </div>
+    <script type="text/javascript" charset="utf-8" src="{{static_url_for('static', filename='build/main.bundle.js')}}"></script>
+    {% block js %}{% endblock %}
+
+</body>
 </html>

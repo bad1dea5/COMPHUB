@@ -2,39 +2,61 @@
 #
 #
 
-from flask import (
-    Blueprint,
-    render_template,
-    request,
-    flash,
-    redirect
-)
+from werkzeug.exceptions import NotImplemented
 
-from COMPHUB.public.forms import RepairForm
-from COMPHUB.public.models import Repair
+from flask import Blueprint, flash, render_template, request
 
-blueprint = Blueprint(
-    "public", __name__,
-    static_folder = "../static",
-    template_folder = "templates"
-)
+from COMPHUB.public.forms import AppointmentForm
+from COMPHUB.admin.models import Appointment, Customer
 
+from COMPHUB.utilities import flash_form_errors
+
+blueprint = Blueprint("public", __name__, static_folder = "../static")
+
+#
+#
+#
 @blueprint.route('/', methods=['GET', 'POST'])
 def index():
-    form = RepairForm(request.form)
-    if request.method == "POST":
-        if form.validate_on_submit():
-            Repair.create(
-                name=form.name.data.lower(),
+    form = AppointmentForm(request.form)
+
+    if request.method == 'POST' and form.validate_on_submit():
+
+        if not form.tos.data:
+            flash('You must agree to the terms and conditions.', 'danger')
+            return render_template('public/index.html', form=form)
+
+        customers = Customer.query.filter(
+            Customer.surname.like('%' + form.surname.data + '%')
+        ).order_by(Customer.surname).all()
+
+        devices = form.hardware.data.split('/')
+
+        if not customers:
+            Customer.create(
+                name=form.name.data.capitalize(),
+                surname=form.surname.data.capitalize(),
                 email=form.email.data.lower(),
                 number=form.number.data,
-                hardware=form.hardware.data,
-                message=form.message.data,
-                status="Waiting",
-                datetime=form.datetime.data
+                appointments=[Appointment(
+                    date=form.date.data,
+                    message=form.message.data,
+                    hardware=devices[1],
+                    device=devices[0]
+                )]
             )
-            flash("Successfully send, thank you.", "success")
-            return render_template('public/index.html', form=form)
         else:
-            flash("An error has occurred.", "danger")
+            for customer in customers:
+                if form.name.data.lower() in customer.name.lower():
+                    Appointment.create(
+                        customer_id=customer.id,
+                        date=form.date.data,
+                        message=form.message.data,
+                        hardware=devices[1],
+                        device=devices[0]
+                    )
+        flash('Your message has been successfully send.', 'success')
+    else:
+        flash_form_errors(form)
+
     return render_template('public/index.html', form=form)

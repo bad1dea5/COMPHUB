@@ -1,0 +1,70 @@
+﻿{% extends "admin/default.html" %}
+
+{% block sidebar %}
+<div class="card">
+    <div class="card-header">Upcoming</div>
+    <div class="card-body">
+        {% if next.appointments %}
+        <div class="vstack gap-3">
+            {% for appointment in next.appointments %}
+            <div class="hstack gap-3">
+                <div class="">{{appointment.date|datetime('%b %d %Y')}}</div>
+                <div class="flex-grow-1">
+                    {% set customer = next.customers[loop.index - 1] %}
+                    <a class="btn btn-sm btn-outline-secondary w-100" href="/admin/customer/{{ customer.id }}">{{ customer.name }} {{ customer.surname }}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class="card mt-3">
+    <div class="card-body col col-md-11 mx-auto">
+        <canvas id="hardwareChart"></canvas>
+    </div>
+</div>
+{% endblock %}
+
+{% block main %}
+<div class="card">
+    <div class="card-header">Database</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover" id="customerTable">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Surname</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-muted">
+        <div class="d-flex">
+            <div class="me-auto my-auto"><span id="customerCount"></span></div>
+            <div class="btn-group">
+                <button type="button" id="customerPagePrev" data-page-next="0" class="btn btn-sm btn-outline-secondary">
+                    <i class="las la-fw la-less-than"></i>
+                </button>
+                <button type="button" id="customerPageCurrent" class="btn btn-sm btn-outline-secondary" disabled></button>
+                <button type="button" id="customerPageNext" data-page-next="0" class="btn btn-sm btn-outline-secondary">
+                    <i class="las la-fw la-greater-than"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    customer.get_page(1);
+</script>
+{% endblock %}

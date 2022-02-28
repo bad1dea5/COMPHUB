@@ -4,16 +4,30 @@
 
 @charset 'utf-8';
 
-@use 'line-awesome.scss';
+@use 'utilities/variables' with (
+    $font-size: .875rem
+);
 
-a {
-    text-decoration: none;
+@use 'vendors/line-awesome';
+
+body {
+    font-size: variables.$font-size;
 }
 
-.item {
-    color: #6c757d;
+.dropdown-menu {
+    font-size: variables.$font-size;
+}
 
-    &:hover {
-        color: #adb5bd;
+.toolbar {
+    position: sticky;
+    top: 56px;
+    z-index: 100;
+}
+
+#user {
+    & > ul {
+        position: absolute;
+        transform: translate(0px, 34px);
+        inset: 0px 0px auto auto;
     }
 }

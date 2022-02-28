@@ -1,0 +1,148 @@
+{% extends "admin/default.html" %}
+
+{% block sidebar %}
+<div class="card mt-3">
+    <div class="card-body">
+        text
+    </div>
+</div>
+{% endblock %}
+
+{% block main %}
+{% if customer %}
+<div class="card">
+    <div class="card-header">
+        <h5>{{ customer.name }} {{ customer.surname }}</h5>
+    </div>
+    <div class="card-body">
+        {% if customerForm %}
+        <form class="row g-3" id="customerUpdateForm" method="post" action="">
+            {{ customerForm.csrf_token }}
+            <div class="col-12">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="las la-user"></i></span>
+                    {{ customerForm.name(class_="form-control form-control-sm") }}
+                    {{ customerForm.surname(class_="form-control form-control-sm") }}
+                </div>
+            </div>
+            <div class="col col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="las la-envelope"></i></span>
+                    {{ customerForm.email(class_="form-control form-control-sm") }}
+                </div>
+            </div>
+            <div class="col col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="las la-phone-alt"></i></span>
+                    {{ customerForm.number(class_="form-control form-control-sm") }}
+                </div>
+            </div>
+            <div class="input-group mt-3">
+                <span class="input-group-text"><i class="las la-pen"></i></span>
+                {{ customerForm.comments(class_="form-control form-control-sm") }}
+            </div>
+        </form>
+        {% endif %}
+
+        <div class="btn-toolbar mt-3">
+            <div class="btn-group me-5">
+                <button type="submit" class="btn btn-sm btn-outline-success" form="customerUpdateForm">
+                    <i class="las la-save"></i>
+                </button>
+            </div>
+            <div class="btn-group">
+                {% if appointmentForm %}
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#newAppointmentModal">
+                    <i class="las la-calendar-plus"></i>
+                </button>
+                <div class="modal fade" id="newAppointmentModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ customer.name }} {{ customer.surname }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>New appointment.</p>
+                                <form class="row g-3" id="appointmentNew" method="post" action="/admin/appointment/new">
+                                    {{ appointmentForm.csrf_token }}
+                                    {{ appointmentForm.customer_id }}
+                                    <div class="col col-md-6">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="las la-calendar"></i></i></span>
+                                            {{ appointmentForm.date(class_="form-control form-control-sm") }}
+                                        </div>
+                                    </div>
+                                    <div class="col col-md-6">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="las la-calendar"></i></i></span>
+                                            {{ appointmentForm.hardware(class_="form-select form-select-sm") }}
+                                        </div>
+                                    </div>
+                                    <div class="col col-md-12">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="las la-comment"></i></span>
+                                            {{ customerForm.message(class_="form-control form-control-sm", rows="5") }}
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" form="appointmentNew">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary"><i class="las la-fh la-print"></i></button>
+            </div>
+            <div class="btn-group ms-auto">
+                <button type="button" class="btn btn-sm btn-outline-danger ms-auto" id="customerDelete">
+                    <i class="las la-fh la-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="list-group mt-3">
+            {% for appointment in customer.appointments %}
+            <div class="mb-3">
+                <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="collapse" data-bs-target="#appointment-{{ appointment.id }}">
+                    <div class="d-flex flex-row">
+                        <div class="me-3"><i class="las la-fh la-calendar"></i></div>
+                        <div class="me-auto">{{ appointment.date | datetime }}</div>
+                        <div class="">{{ appointment.hardware }}</div>
+                    </div>
+                </a>
+                <div class="collapse" id="appointment-{{ appointment.id }}">
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col col-md-9 mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="las la-comment"></i></span>
+                                    <textarea id="appointmentMessage" class="form-control form-control-sm" rows="3">{{ appointment.message }}</textarea>
+                                    <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="vstack gap-2 col-md-10 mx-auto">
+                                    <button type="button" onclick="customer.update_appointment({{ appointment.id }});" class="btn btn-sm btn-outline-secondary">Save</button>
+                                    <button type="button" onclick="customer.delete_appointment({{ appointment.id }});" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="card-footer text-muted">
+        <div class="d-flex">
+            <div class="me-auto my-auto">{{ customer.created | datetime('%b %d %Y @ %H:%M:%S') }}</div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block js %}{% endblock %}

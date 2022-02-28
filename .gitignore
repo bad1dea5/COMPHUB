@@ -1,0 +1,9 @@
+#
+#
+#
+
+.vs/
+venv/
+node_modules/
+__pycache__/
+migrations/

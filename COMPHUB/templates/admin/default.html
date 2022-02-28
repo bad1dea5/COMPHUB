@@ -1,0 +1,136 @@
+{% extends "default.html" %}
+{% block header %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap">
+    <div class="container-fluid">
+        <a class="navbar-brand col-md-3 col-lg-2 me-auto" href="{{url_for('admin.index')}}">
+            <i class="las la-fw la-cubes me-1"></i>COMPHUB
+        </a>
+        <div class="navbar-nav me-2">
+            <div class="nav-item text-nowrap">
+                <ul class="navbar-nav flex-row">
+                    <li class="nav-item me-1">
+                        <button type="button" class="btn btn-dark"><i class="las la-bell"></i></button>
+                    </li>
+                    <li class="nav-item me-1">
+                        <button type="button" class="btn btn-dark"><i class="las la-envelope"></i></button>
+                    </li>
+                    <li class="nav-item dropdown" id="user">
+                        <button type="button" class="btn btn-dark dropdown-toggle" id="user-dropdown" data-bs-toggle="dropdown">
+                            <i class="las la-user-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu" id="user">
+                            <li><h6 class="dropdown-header">username</h6></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('public.index') }}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <button class="navbar-toggler d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar">
+            <i class="las la-bars"></i>
+        </button>
+    </div>
+</header>
+<div class="bg-body shadow-sm toolbar">
+    <div class="nav flex-column flex-md-row">
+        <div class="nav-link me-auto">
+            <div class="btn-toolbar">
+                <div class="btn-group me-2">
+                    <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-outline-secondary"><i class="las la-fh la-tachometer-alt"></i></a>
+                </div>
+                <div class="btn-group me-2">
+                    <button href="{{ url_for('admin.index') }}" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#customerNewModal">
+                        <i class="las la-fh la-user-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="nav-link col-md-3">
+            <div class="input-group">
+                <span class="input-group-text"><i class="las la-search"></i></span>
+                <input type="text" class="form-control form-control-sm search" placeholder="Search">
+            </div>
+            <div class="list-group position-absolute search-box"></div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="customerNewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="las la-fh la-user-plus me-3"></i>New customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {% if customerNewForm %}
+                <form class="row g-3" id="customerNewForm" method="post" action="{{ url_for('admin.new_customer') }}">
+                    {{ customerNewForm.csrf_token }}
+                    <div class="col-12">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="las la-user"></i></span>
+                            {{ customerNewForm.name(class_="form-control form-control-sm", placeholder="Name") }}
+                            {{ customerNewForm.surname(class_="form-control form-control-sm", placeholder="Surname") }}
+                        </div>
+                    </div>
+                    <div class="col col-md-12">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="las la-envelope"></i></span>
+                            {{ customerNewForm.email(class_="form-control form-control-sm", placeholder="Email") }}
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="las la-phone-alt"></i></span>
+                            {{ customerNewForm.number(class_="form-control form-control-sm", placeholder="Number (Optional)") }}
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="las la-laptop"></i></i></span>
+                            {{ customerNewForm.hardware(class_="form-select form-select-sm") }}
+                        </div>
+                    </div>
+                    <div class="input-group mt-3">
+                        <span class="input-group-text"><i class="las la-comment"></i></span>
+                        {{ customerNewForm.message(class_="form-control form-control-sm") }}
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="customerNewForm" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12 col-md-3">
+        {% block sidebar %}{% endblock %}
+    </div>
+    <div class="col-12 col-md-9">
+        {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div id="statusbar" class="toast">
+                <div class="toast-header">
+                    <i class="las la-fw la-fh la-bell"></i>
+                    <strong class="me-auto"></strong>
+                    <small>0 mins ago</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body bg-light">
+                    {% for category, message in messages %}
+                    <h6 class="ms-3">{{ message }}</h6>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}{% endwith %}
+        {% block main %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+{% block js %}{% endblock %}

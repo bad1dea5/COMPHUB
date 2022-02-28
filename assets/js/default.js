@@ -2,5 +2,10 @@
 //
 //
 
-require('../../node_modules/bootstrap/js/src/alert');
-require('../../node_modules/bootstrap/js/src/dropdown');
+require('jquery');
+
+window.bootstrap = require('bootstrap');
+
+require.context('../img', true, /.*/,);
+
+require('./admin');

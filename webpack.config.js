@@ -7,52 +7,44 @@ const webpack = require("webpack");
 
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+const debug = process.env.NODE_ENV === "production" ? "production" : "development";
+
 module.exports = {
     context: __dirname,
     entry: {
-        default_js: "./assets/js/default",
+        main: path.join(__dirname, "assets", "js", "default"),
         default: [
             path.join(__dirname, "node_modules", "bootstrap", "scss", "bootstrap.scss"),
-            path.join(__dirname, "assets", "scss", "default.scss"), 
+            path.join(__dirname, "assets", "scss", "default.scss"),
         ],
     },
+    mode: debug,
     output: {
         filename: "[name].bundle.js",
         path: path.join(__dirname, "COMPHUB", "static", "build"),
     },
     resolve: {
-        extensions: [".js", ".jsx"]
+        extensions: [".js", ".jsx", ".scss"],
     },
     plugins: [
-        new MiniCssExtractPlugin({filename: "[name].bundle.css" }),
+        new MiniCssExtractPlugin({ filename: "[name].bundle.css" }),
+        new webpack.ProvidePlugin({ $: "jquery", jQuery: "jquery" }),
     ],
     module: {
         rules: [
             {
                 test: /\.s[ac]ss$/i,
                 use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {},
-                    },
+                    { loader: MiniCssExtractPlugin.loader, options: {}, },
                     "css-loader",
-                    {
-                        loader: "sass-loader",
-                        options: { implementation: require("sass") },
-                    },
+                    { loader: "sass-loader", options: { implementation: require("sass") }, },
                 ],
             },
             {
                 test: /\.js(x)$/i,
                 exclude: /node_modules/,
                 use: [
-                    {
-                        loader: "babel-loader",
-                        options: {
-                            presets: ["@babel/preset-env"],
-                            cacheDirectory: true,
-                        },
-                    },
+                    { loader: "babel-loader", options: { presets: ["@babel/preset-env"], cacheDirectory: true, }, },
                 ],
             },
             {
